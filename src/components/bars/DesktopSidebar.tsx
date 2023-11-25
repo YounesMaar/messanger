@@ -1,0 +1,53 @@
+"use client";
+
+import useRoutes from "@/hooks/useRoutes";
+import { FC, useState } from "react";
+import DesktopItem from "./DesktopItem";
+import { User } from "@prisma/client";
+import Avatar from "../ui/Avatar";
+import SettingsModal from "../SettingModal";
+
+interface DesktopSidebarProps {
+  currentUser: User;
+}
+
+const DesktopSidebar: FC<DesktopSidebarProps> = ({ currentUser }) => {
+  const routes = useRoutes();
+
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <SettingsModal
+        currentUser={currentUser}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
+      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-fit lg:px-6 lg:bg-white lg:border-r-[1px] lg:pb-4 lg:flex lg:flex-col justify-between">
+        <nav className="mt-4 flex flex-col justify-between">
+          <ul className="flex flex-col  items-start space-y-1" role="list">
+            {routes.map((item) => (
+              <DesktopItem
+                key={item.href}
+                href={item.href}
+                label={item.label}
+                icon={item.icon}
+                active={item.active}
+                onClick={item.onClick}
+              />
+            ))}
+          </ul>
+        </nav>
+        <div className="mt-4 flex flex-col justify-between items-center">
+          <div
+            className="cursor-pointer hover:opacity-75 transition"
+            onClick={() => setIsOpen(true)}
+          >
+            <Avatar user={currentUser} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default DesktopSidebar;
